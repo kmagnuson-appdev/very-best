@@ -1,7 +1,7 @@
 <div class="page-header">
   <h1>
     Dishes
-    <a href="/venues/new" class="btn btn-lg btn-success">Add a new venue</a>
+    
   </h1>
 </div><div class="row mb-1">
   <div class="col-md-12">
@@ -102,17 +102,37 @@
         </td>
         
         <td>
-            <%= select_tag("venue", options_from_collection_for_select(Venue.all, :id, :name, @venue.try(:dish_id)), :class => "form-control") %>
+          <% if Bookmark.where(dish_id: dish.id, user_id: current_user.id).count == 0 %>
+              <form action="/create_bookmark" class="form-inline" method="post">
+                
+                <div class="form-group">
+                  <label for="venue_id" class="control-label">
+                  </label>
+                    <%= select_tag(:venue_id, options_from_collection_for_select(Venue.all, :id, :name, @bookmark.try(:venue_id)),:prompt => "Choose a venue", :class => "form-control") %>
+                </div>
+                
+                <input type="hidden" name="dish_id" value="<%=dish.id%>">
+                <input type="hidden" name="user_id" value="<%=current_user.id%>">
+                <input type="hidden" name="notes" value="">
+                
+                
+                <button class="btn btn-primary btn-sm">
+                  <i class="fa fa-heart"></i>
+                </button>
+              </form>
+              <% else %>
+              
+              <% list = Bookmark.where(dish_id: dish.id, user_id: current_user.id) %>
+                <% if list.size > 0 %>
+              <a href="/venues/<%= Venue.find(list.first.venue_id).id %>">
+              <%= Venue.find(list.first.venue_id).name %>
+          <% end %>
+          
+          <% end %>
         </td>
-
-        <td>
-            <button type="button" class="btn btn-primary"> &hearts; </button>
-
-        </td>
-
+ 
         <td>
           <% if dish.cuisine.present? %>
-            <a href="/cuisines/<%= dish.cuisine.id %>">
               <%= dish.cuisine.name %>
             </a>
           <% end %>
@@ -123,5 +143,9 @@
       <% end %>
     </table>
     <%= paginate @dishes, theme: 'twitter-bootstrap-4' %>
+  </div
+  <div class="row"> 
+    <a href="/venues/new" class="btn btn-lg btn-success">Add a new venue</a>
   </div>
 </div>
+
