@@ -89,7 +89,8 @@
       <tr>
         <th>The very best...</th>
         <th>is at...</th>
-        <th> </th>
+        <th>  </th>
+        <th>  </th>
       </tr>
 
       <% @dishes.each do |dish| %>
@@ -99,6 +100,16 @@
             <%= dish.name %> 
           </a> 
         </td>
+        
+        <td>
+            <%= select_tag("venue", options_from_collection_for_select(Venue.all, :id, :name, @venue.try(:dish_id)), :class => "form-control") %>
+        </td>
+
+        <td>
+            <button type="button" class="btn btn-primary"> &hearts; </button>
+
+        </td>
+
         <td>
           <% if dish.cuisine.present? %>
             <a href="/cuisines/<%= dish.cuisine.id %>">
@@ -106,11 +117,8 @@
             </a>
           <% end %>
         </td>
-        <td>
-          <a href="/dishes/<%= dish.id %>" class="btn btn-primary">Show</a>
-          <a href="/dishes/<%= dish.id %>/edit" class="btn btn-warning">Edit</a>
-          <a href="/delete_dish/<%= dish.id %>" class="btn btn-danger" rel="nofollow">Delete</a>
-        </td>
+        
+        
       </tr>
       <% end %>
     </table>
